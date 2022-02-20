@@ -1,8 +1,8 @@
 ﻿namespace FirstNetAPI.Models
 {
-    public class Animal
+    public class AnimalRow
     {
-        public int ID { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
         public string Type { get; set; }
 

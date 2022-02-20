@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSingleton<AnimalRepository>();
+builder.Services.AddSingleton<AnimalSqlRepository>();
+builder.Services.AddSingleton<AnimalDocRepository>();
 
 var app = builder.Build();
 
@@ -12,38 +13,29 @@ app.UseStaticFiles();
 
 app.MapGet("/", () => Results.Redirect("index.html"));
 
-app.MapGet("/animals", ([FromServices] AnimalRepository repo) => repo.GetAll());
+app.MapGet("/animals", ([FromServices] AnimalDocRepository repo) => repo.GetAll());
 
-app.MapGet("/animals/{id}", ([FromServices] AnimalRepository repo, int id) =>
+app.MapGet("/animals/{id}", ([FromServices] AnimalDocRepository repo, string id) =>
 {
-    var animals = repo.GetAll();
-    if (id >= animals.Count)
-    {
-        return Results.NotFound();
-    }
+    var animal = repo.GetById(id);
 
-    return Results.Ok(animals[id]);
+    return Results.Ok(animal);
 });
 
-app.MapPost("/animals", ([FromServices] AnimalRepository repo, Animal? animal) =>
+app.MapPost("/animals", ([FromServices] AnimalDocRepository repo, AnimalDoc animal) =>
 {
-    if (animal is null)
-    {
-        return Results.BadRequest();
-    }
-
     repo.Create(animal);
     var animals = repo.GetAll();
-    return Results.Created($"/animals/{animal.ID}", animals);
+    return Results.Created($"animals/{animal.Id}",animals);
 });
 
-app.MapPut("/animals/{id}", ([FromServices] AnimalRepository repo, Animal animal) =>
+app.MapPut("/animals", ([FromServices] AnimalDocRepository repo, AnimalDoc animal) =>
 {
     repo.Update(animal);
     return Results.Ok();
 });
 
-app.MapDelete("/animals/{id}", ([FromServices] AnimalRepository repo, int id) =>
+app.MapDelete("/animals/{id}", ([FromServices] AnimalDocRepository repo, string id) =>
 {
     repo.Delete(id);
     var animals = repo.GetAll();
