@@ -2,16 +2,16 @@
 
 namespace FirstNetAPI.DAL
 {
-    class AnimalSqlRepository
+    class AnimalService : IAnimalService
     {
         private readonly AnimalContext _context;
 
-        public AnimalSqlRepository()
+        public AnimalService()
         {
             _context = new AnimalContext();
         }
 
-        public void Create(AnimalRow? animal)
+        public void Create(Animal? animal)
         {
             if (animal is null)
             {
@@ -22,17 +22,17 @@ namespace FirstNetAPI.DAL
             _context.SaveChanges();
         }
 
-        public AnimalRow? GetById(int id)
+        public Animal? GetById(int id)
         {
             return _context.Animals.FirstOrDefault(a => a.Id == id);
         }
 
-        public List<AnimalRow> GetAll()
+        public List<Animal> GetAll()
         {
             return _context.Animals.Where(a => true).ToList();
         }
 
-        public void Update(AnimalRow animal)
+        public void Update(Animal animal)
         {
             var existingAnimal = GetById(animal.Id);
             if (existingAnimal is null)

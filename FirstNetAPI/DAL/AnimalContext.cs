@@ -5,7 +5,7 @@ namespace FirstNetAPI.DAL
 {
     public class AnimalContext : DbContext
     {
-        public DbSet<AnimalRow> Animals { get; set; }
+        public DbSet<Animal> Animals { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
